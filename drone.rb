@@ -36,7 +36,7 @@ class Drone < Formula
       bin.install "#{drone_build_path}/drone_cli" => "drone"
       Dir.chdir buildpath
     else 
-      bin.install "#{buildpath}/darwin/amd64/drone" => "drone"
+      bin.install "#{buildpath}/drone" => "drone"
     end
   ensure
     rm_rf drone_build_home if build.head?
