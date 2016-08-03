@@ -3,11 +3,22 @@ require "securerandom"
 
 class Drone < Formula
   homepage "https://github.com/drone/drone"
-  url "http://downloads.drone.io/drone-cli/drone_darwin_amd64.tar.gz"
-  sha256 `curl -s http://downloads.drone.io/drone-cli/drone_darwin_amd64.sha256`.split(' ').first
+  head "https://github.com/drone/drone.git"
+
+  stable do
+    url "http://downloads.drone.io/drone-cli/drone_darwin_amd64.tar.gz"
+    sha256 `curl -s http://downloads.drone.io/drone-cli/drone_darwin_amd64.sha256`.split(' ').first
+    version "0.4-cli"
+  end
+
+  devel do
+    url "http://downloads.drone.io/release/darwin/amd64/drone.tar.gz"
+    sha256 `curl -s http://downloads.drone.io/release/darwin/amd64/drone.sha256`.split(' ').first
+    version "0.5"
+  end
 
   head do
-    url "https://github.com/drone/drone-cli.git", :branch => "master"
+    url "https://github.com/drone/drone.git", :branch => "master"
 
     depends_on "go" => :build
     depends_on "mercurial" => :build
@@ -17,29 +28,23 @@ class Drone < Formula
 
   def install
     if build.head?
-      drone_build_home = "/tmp/#{SecureRandom.hex}"
-      drone_build_path = File.join(drone_build_home, "src", "github.com", "drone", "drone-cli")
+      mkdir_p buildpath/File.join("src", "github.com", "drone")
+      ln_s buildpath, buildpath/File.join("src", "github.com", "drone", "drone")
 
-      ENV["GOPATH"] = drone_build_home
-      ENV["GOHOME"] = drone_build_home
+      ENV["DRONE_BUILD_NUMBER"] = "homebrew"
+      ENV["GOVENDOREXPERIMENT"] = "1"
+      ENV["GOPATH"] = buildpath
+      ENV["GOHOME"] = buildpath
+      ENV["PATH"] += ":" + File.join(buildpath, "bin")
 
-      mkdir_p drone_build_path
+      system("make deps_backend")
+      system("make deps gen")
+      system("make build_static")
 
-      system("cp -R #{buildpath}/* #{drone_build_path}")
-      ln_s File.join(cached_download, '.git'), File.join(drone_build_path, '.git')
-
-      Dir.chdir drone_build_path
-
-      system("go get ./...")
-      system("go build -o ./drone_cli github.com/drone/drone-cli/drone")
-
-      bin.install "#{drone_build_path}/drone_cli" => "drone"
-      Dir.chdir buildpath
+      bin.install "#{buildpath}/release/drone" => "drone"
     else 
       bin.install "#{buildpath}/drone" => "drone"
     end
-  ensure
-    rm_rf drone_build_home if build.head?
   end
 
   test do
