@@ -6,15 +6,15 @@ class Drone < Formula
   head "https://github.com/drone/drone.git"
 
   stable do
-    url "http://downloads.drone.io/drone-cli/drone_darwin_amd64.tar.gz"
-    sha256 `curl -s http://downloads.drone.io/drone-cli/drone_darwin_amd64.sha256`.split(' ').first
-    version "0.4-cli"
+    url "http://downloads.drone.io/0.5.0/release/darwin/amd64/drone.tar.gz"
+    sha256 `curl -s http://downloads.drone.io/0.5.0/release/darwin/amd64/drone.sha256`.split(' ').first
+    version "0.5"
   end
 
   devel do
-    url "http://downloads.drone.io/release/darwin/amd64/drone.tar.gz"
-    sha256 `curl -s http://downloads.drone.io/release/darwin/amd64/drone.sha256`.split(' ').first
-    version "0.5"
+    url "http://downloads.drone.io/0.6.0/release/darwin/amd64/drone.tar.gz"
+    sha256 `curl -s http://downloads.drone.io/0.6.0/release/darwin/amd64/drone.sha256`.split(' ').first
+    version "0.6.0"
   end
 
   head do
