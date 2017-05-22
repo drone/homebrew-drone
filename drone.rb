@@ -10,8 +10,7 @@ class Drone < Formula
   bottle :unneeded
   
   def install
-      bin.install "#{buildpath}/drone" => "drone"
-    end
+    bin.install "#{buildpath}/drone" => "drone"
   end
 
   test do
