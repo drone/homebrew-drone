@@ -4,45 +4,10 @@ require "securerandom"
 class Drone < Formula
   homepage "https://github.com/drone/drone"
   head "https://github.com/drone/drone.git"
-
-  stable do
-    url "http://downloads.drone.io/0.5.0/release/darwin/amd64/drone.tar.gz"
-    sha256 `curl -s http://downloads.drone.io/0.5.0/release/darwin/amd64/drone.sha256`.split(' ').first
-    version "0.5"
-  end
-
-  devel do
-    url "http://downloads.drone.io/0.6.0/release/darwin/amd64/drone.tar.gz"
-    sha256 `curl -s http://downloads.drone.io/0.6.0/release/darwin/amd64/drone.sha256`.split(' ').first
-    version "0.6.0"
-  end
-
-  head do
-    url "https://github.com/drone/drone.git", :branch => "master"
-
-    depends_on "go" => :build
-    depends_on "mercurial" => :build
-    depends_on "bzr" => :build
-    depends_on "git" => :build
-  end
+  url "https://github.com/drone/drone-cli/releases/download/v0.6.0/drone_darwin_amd64.tar.gz"
+  sha256 "c97670fae9202694efc3f72b409ce818976e9b4f7946d2826faabc6133ba969e"
 
   def install
-    if build.head?
-      mkdir_p buildpath/File.join("src", "github.com", "drone")
-      ln_s buildpath, buildpath/File.join("src", "github.com", "drone", "drone")
-
-      ENV["DRONE_BUILD_NUMBER"] = "homebrew"
-      ENV["GOVENDOREXPERIMENT"] = "1"
-      ENV["GOPATH"] = buildpath
-      ENV["GOHOME"] = buildpath
-      ENV["PATH"] += ":" + File.join(buildpath, "bin")
-
-      system("make deps_backend")
-      system("make deps gen")
-      system("make build_static")
-
-      bin.install "#{buildpath}/release/drone" => "drone"
-    else 
       bin.install "#{buildpath}/drone" => "drone"
     end
   end
