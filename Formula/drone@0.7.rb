@@ -1,3 +1,5 @@
+require File.expand_path("../../Abstract/abstract-drone", __FILE__)
+
 class DroneAT07 < AbstractDrone
   init
   url "https://github.com/drone/drone-cli/releases/download/v0.7.0/drone_darwin_amd64.tar.gz"
