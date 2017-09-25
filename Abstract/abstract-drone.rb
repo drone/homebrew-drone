@@ -40,7 +40,7 @@ class AbstractDrone < Formula
       raise "Could not find checksum"
     end
     url = checksum_assest.first['browser_download_url']
-    `curl -L -s https://github.com/drone/drone-cli/releases/download/v0.7.0/drone_checksums.txt`.lines.grep(/drone_darwin_amd64.tar.gz/).first.split(' ').first
+    `curl -L -s #{url}`.lines.grep(/drone_darwin_amd64.tar.gz/).first.split(' ').first
   end
 
   def install
