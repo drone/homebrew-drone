@@ -4,7 +4,7 @@ class AbstractDrone < Formula
   def self.init
     homepage "https://github.com/drone/drone-cli"
     head "https://github.com/drone/drone-cli.git"
-    url assets.select { |v| File.basename(v['browser_download_url']) == "#{platform_url}" }.first['browser_download_url']
+    url assets.select { |v| File.basename(v['browser_download_url']) == "#{drone_file_name}" }.first['browser_download_url']
     sha256 sha256sum
 
     test do
@@ -12,7 +12,7 @@ class AbstractDrone < Formula
     end
   end
 
-  def self.platform_url
+  def self.drone_file_name
     p = 'drone_darwin_amd64.tar.gz'
     if !RUBY_PLATFORM.downcase.include?('darwin')
       p = 'drone_linux_amd64.tar.gz'
@@ -48,7 +48,7 @@ class AbstractDrone < Formula
       raise "Could not find checksum"
     end
     url = checksum_assest.first['browser_download_url']
-    `curl -L -s #{url}`.lines.grep(/#{platform_url}/).first.split(' ').first
+    `curl -L -s #{url}`.lines.grep(/#{drone_file_name}/).first.split(' ').first
   end
 
   def install
