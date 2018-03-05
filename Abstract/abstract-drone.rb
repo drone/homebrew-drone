@@ -4,7 +4,7 @@ class AbstractDrone < Formula
   def self.init
     homepage "https://github.com/drone/drone-cli"
     head "https://github.com/drone/drone-cli.git"
-    url assets.select { |v| File.basename(v['browser_download_url']) == 'drone_darwin_amd64.tar.gz' }.first['browser_download_url']
+    url artifact_url
     sha256 sha256sum
 
     test do
@@ -20,8 +20,23 @@ class AbstractDrone < Formula
     c
   end
 
+  def self.get(url)
+    JSON.parse(`#{curl_cmd} #{url}`)
+  end
+
+  def self.artifact_url
+    if version.nil?
+      version "latest"
+    end
+    version == "latest" ? latest_url : "https://github.com/drone/drone-cli/releases/download/v#{version}/drone_darwin_amd64.tar.gz"
+  end
+
+  def self.latest_url
+    assets.select { |v| File.basename(v['browser_download_url']) == 'drone_darwin_amd64.tar.gz' }.first['browser_download_url']
+  end
+
   def self.assets
-    json = JSON.parse(`#{curl_cmd} https://api.github.com/repos/drone/drone-cli/releases/latest`)
+    json = get "https://api.github.com/repos/drone/drone-cli/releases/latest"
 
     if json['message'] =~ /API rate limit exceeded/
       raise json['message']
@@ -35,6 +50,16 @@ class AbstractDrone < Formula
   end
 
   def self.sha256sum
+    if version.nil?
+      version "latest"
+    end
+
+    return latest_sha256sum if version == "latest"
+
+    `curl -L -s https://github.com/drone/drone-cli/releases/download/v#{version}/drone_checksums.txt`.split(' ').first
+  end
+
+  def self.latest_sha256sum
     checksum_assest = assets.select { |v| File.basename(v['browser_download_url']) == 'drone_checksums.txt' }
     if checksum_assest.empty?
       raise "Could not find checksum"
