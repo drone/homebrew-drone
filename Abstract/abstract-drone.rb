@@ -12,14 +12,6 @@ class AbstractDrone < Formula
     end
   end
 
-  def self.drone_file_name
-    p = 'drone_darwin_amd64.tar.gz'
-    if !RUBY_PLATFORM.downcase.include?('darwin')
-      p = 'drone_linux_amd64.tar.gz'
-    end
-    p
-  end
-
   def self.curl_cmd
     c = 'curl -L -s'
     if ENV['HOMEBREW_GITHUB_API_TOKEN']
@@ -40,7 +32,7 @@ class AbstractDrone < Formula
   end
 
   def self.latest_url
-    assets.select { |v| File.basename(v['browser_download_url']) == 'drone_darwin_amd64.tar.gz' }.first['browser_download_url']
+    assets.select { |v| File.basename(v['browser_download_url']) == download_file }.first['browser_download_url']
   end
 
   def self.assets
@@ -74,6 +66,29 @@ class AbstractDrone < Formula
     end
     url = checksum_assest.first['browser_download_url']
     `curl -L -s #{url}`.lines.grep(/#{drone_file_name}/).first.split(' ').first
+  end
+
+  def self.download_file
+    return 'drone_linux_amd64.tar.gz' if os == :linux
+    'drone_darwin_amd64.tar.gz'
+  end
+
+  def self.os
+    @os ||= (
+      host_os = RbConfig::CONFIG['host_os']
+      case host_os
+      when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+        :windows
+      when /darwin|mac os/
+        :macosx
+      when /linux/
+        :linux
+      when /solaris|bsd/
+        :unix
+      else
+        raise Error::WebDriverError, "unknown os: #{host_os.inspect}"
+      end
+    )
   end
 
   def install
