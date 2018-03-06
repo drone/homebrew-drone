@@ -12,6 +12,14 @@ class AbstractDrone < Formula
     end
   end
 
+  def self.drone_file_name
+    p = 'drone_darwin_amd64.tar.gz'
+    if !RUBY_PLATFORM.downcase.include?('darwin')
+      p = 'drone_linux_amd64.tar.gz'
+    end
+    p
+  end
+
   def self.curl_cmd
     c = 'curl -L -s'
     if ENV['HOMEBREW_GITHUB_API_TOKEN']
@@ -65,7 +73,7 @@ class AbstractDrone < Formula
       raise "Could not find checksum"
     end
     url = checksum_assest.first['browser_download_url']
-    `curl -L -s #{url}`.lines.grep(/drone_darwin_amd64.tar.gz/).first.split(' ').first
+    `curl -L -s #{url}`.lines.grep(/#{drone_file_name}/).first.split(' ').first
   end
 
   def install
