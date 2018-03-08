@@ -65,7 +65,7 @@ class AbstractDrone < Formula
       raise "Could not find checksum"
     end
     url = checksum_assest.first['browser_download_url']
-    `curl -L -s #{url}`.lines.grep(/#{drone_file_name}/).first.split(' ').first
+    `curl -L -s #{url}`.lines.grep(/#{download_file}/).first.split(' ').first
   end
 
   def self.download_file
