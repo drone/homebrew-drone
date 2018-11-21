@@ -1,6 +1,6 @@
 require File.expand_path("../../Abstract/abstract-drone", __FILE__)
 
-class DroneAT08 < AbstractDrone
+class DroneAT10 < AbstractDrone
   version "1.0"
   init
   url "https://github.com/drone/drone-cli/releases/download/v1.0.1/drone_darwin_amd64.tar.gz"
