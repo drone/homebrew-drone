@@ -2,8 +2,8 @@ require "formula"
 
 class AbstractDrone < Formula
   def self.init
-    homepage "https://github.com/drone/drone-cli"
-    head "https://github.com/drone/drone-cli.git"
+    homepage "https://github.com/harness/drone-cli"
+    head "https://github.com/harness/drone-cli.git"
     url artifact_url
     sha256 sha256sum
 
@@ -28,7 +28,7 @@ class AbstractDrone < Formula
     if version.nil?
       version "latest"
     end
-    version == "latest" ? latest_url : "https://github.com/drone/drone-cli/releases/download/v#{version}/drone_darwin_amd64.tar.gz"
+    version == "latest" ? latest_url : "https://github.com/harness/drone-cli/releases/download/v#{version}/drone_darwin_amd64.tar.gz"
   end
 
   def self.latest_url
@@ -36,7 +36,7 @@ class AbstractDrone < Formula
   end
 
   def self.assets
-    json = get "https://api.github.com/repos/drone/drone-cli/releases/latest"
+    json = get "https://api.github.com/repos/harness/drone-cli/releases/latest"
 
     if json['message'] =~ /API rate limit exceeded/
       raise json['message']
@@ -56,7 +56,7 @@ class AbstractDrone < Formula
 
     return latest_sha256sum if version == "latest"
 
-    `curl -L -s https://github.com/drone/drone-cli/releases/download/v#{version}/drone_checksums.txt`.split(' ').first
+    `curl -L -s https://github.com/harness/drone-cli/releases/download/v#{version}/drone_checksums.txt`.split(' ').first
   end
 
   def self.latest_sha256sum
